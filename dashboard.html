@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Bookings · Braids by Anita</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#1E130D">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='32' fill='%232E1D14'/%3E%3Cg fill='none' stroke-linecap='round' stroke-width='7'%3E%3Cpath d='M26 8c12 8 12 16 0 24s-12 16 0 24' stroke='%23C9A27A'/%3E%3Cpath d='M38 8c-12 8-12 16 0 24s12 16 0 24' stroke='%23E3CFB2'/%3E%3C/g%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --espresso: #1E130D; --cocoa: #2E1D14; --chocolate: #4A2E20; --chestnut: #7A4E33; --bronze: #A8774E;
+      --caramel: #C9A27A; --sand: #E3CFB2; --linen: #EFE6DA; --ivory: #F8F3EC; --ink: #3A2519; --muted: #7B6656;
+      --sage: #6F7A55; --rust: #A5523A;
+      --serif: "Cormorant Garamond", "Times New Roman", serif;
+      --sans: "Montserrat", system-ui, sans-serif;
+      --gutter: clamp(16px, 4vw, 40px);
+      --ease: cubic-bezier(.2,.75,.25,1);
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; background: var(--linen); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+    h1, h2, h3, p { margin: 0; }
+    button, input { font: inherit; color: inherit; }
+    a { color: inherit; }
+    :focus-visible { outline: 2px solid var(--chestnut); outline-offset: 2px; border-radius: 6px; }
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 0 var(--gutter); }
+
+    .top { background: linear-gradient(118deg, #22150E, #3A2418 30%, #1E130D 55%, #4A2E20 80%, #22150E); color: var(--ivory); padding: 18px 0 92px; }
+    .top__bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .wordmark { display: flex; flex-direction: column; line-height: 1; text-decoration: none; }
+    .wordmark small { font-family: var(--serif); font-style: italic; font-size: 14px; color: var(--caramel); }
+    .wordmark span { font-family: var(--serif); font-size: 22px; letter-spacing: .32em; }
+    .top__right { display: flex; align-items: center; gap: 8px; }
+    .tag, .ghost { white-space: nowrap; }
+    .tag { font-size: 10px; letter-spacing: .16em; text-transform: uppercase; background: rgba(227,207,178,.16); color: var(--sand); border-radius: 99px; padding: 6px 12px; }
+    .ghost { border: 1px solid rgba(248,243,236,.4); background: none; color: var(--ivory); border-radius: 99px; padding: 8px 16px; font-size: 13px; text-decoration: none; cursor: pointer; }
+    .ghost:hover { background: rgba(248,243,236,.1); }
+    .hello { margin-top: 40px; }
+    .hello p { color: var(--caramel); font-size: 12px; letter-spacing: .2em; text-transform: uppercase; }
+    .hello h1 { font-family: var(--serif); font-weight: 300; font-size: clamp(40px, 6vw, 64px); line-height: 1; margin-top: 8px; }
+    .hello h1 i { color: var(--sand); }
+
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: -60px; }
+    .stat { background: var(--ivory); border-radius: 20px; padding: 18px 20px; box-shadow: 0 20px 40px -28px rgba(30,19,13,.5); }
+    .stat small { display: block; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+    .stat b { display: block; font-family: var(--serif); font-weight: 500; font-size: 38px; line-height: 1.1; margin-top: 6px; color: var(--ink); }
+    .stat span { font-size: 12px; color: var(--muted); }
+    @media (max-width: 820px) { .stats { grid-template-columns: 1fr 1fr; } }
+
+    /* revenue chart */
+    .rev { background: var(--ivory); border-radius: 22px; padding: 22px 22px 16px; margin-top: 16px; position: relative; }
+    .rev__head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 8px; }
+    .rev h2 { font-family: var(--serif); font-weight: 400; font-size: 28px; line-height: 1.1; }
+    .rev__kpis { display: flex; gap: 28px; flex-wrap: wrap; }
+    .rev__kpis small { display: block; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+    .rev__kpis b { font-family: var(--serif); font-weight: 500; font-size: 30px; line-height: 1.1; color: var(--ink); }
+    .legend { display: flex; gap: 18px; font-size: 13px; color: var(--muted); margin: 6px 0 4px; }
+    .legend span { display: inline-flex; align-items: center; gap: 7px; }
+    .legend i { width: 12px; height: 12px; border-radius: 3px; }
+    .chart { position: relative; }
+    .chart svg { display: block; width: 100%; height: 240px; overflow: visible; }
+    .chart .grid line { stroke: rgba(58,37,25,.1); }
+    .chart .axis text { font-size: 11px; fill: var(--muted); font-family: var(--sans); }
+    .chart .today line { stroke: var(--ink); stroke-dasharray: 3 3; }
+    .chart .today text { font-size: 10px; letter-spacing: .12em; fill: var(--ink); font-family: var(--sans); }
+    .chart .hit { fill: transparent; cursor: pointer; }
+    .chart .hit:hover, .chart .hit:focus { fill: rgba(58,37,25,.05); outline: none; }
+    .tip { position: absolute; pointer-events: none; background: var(--espresso); color: var(--ivory); border-radius: 12px; padding: 10px 12px; font-size: 12px; line-height: 1.5; white-space: nowrap; transform: translate(-50%, -100%); opacity: 0; transition: opacity .15s; z-index: 2; }
+    .tip.show { opacity: 1; }
+    .tip b { font-family: var(--serif); font-size: 18px; font-weight: 500; }
+    .tip i { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 6px; }
+    .rev details { margin-top: 8px; font-size: 13px; }
+    .rev summary { cursor: pointer; color: var(--muted); }
+    .rev table { width: 100%; border-collapse: collapse; margin-top: 10px; font-variant-numeric: tabular-nums; }
+    .rev th, .rev td { text-align: right; padding: 6px 8px; border-bottom: 1px solid rgba(58,37,25,.1); }
+    .rev th:first-child, .rev td:first-child { text-align: left; }
+    .rev .note { font-size: 12px; color: var(--muted); margin-top: 6px; }
+
+    .days { display: flex; gap: 8px; overflow-x: auto; padding: 22px 0 6px; scrollbar-width: none; }
+    .days::-webkit-scrollbar { display: none; }
+    .day { flex: none; width: 58px; border: 1px solid rgba(58,37,25,.16); background: var(--ivory); border-radius: 16px; padding: 10px 0 8px; text-align: center; cursor: pointer; transition: background .2s, color .2s; }
+    .day small { display: block; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+    .day b { display: block; font-family: var(--serif); font-size: 24px; font-weight: 500; line-height: 1.1; }
+    .day i { display: flex; justify-content: center; gap: 3px; height: 6px; margin-top: 4px; }
+    .day i::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--bronze); opacity: 0; }
+    .day.has i::before { opacity: 1; }
+    .day[aria-pressed="true"] { background: var(--espresso); color: var(--ivory); border-color: var(--espresso); }
+    .day[aria-pressed="true"] small { color: var(--caramel); }
+
+    .controls { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin: 18px 0 14px; }
+    .filters { display: flex; gap: 6px; flex-wrap: wrap; }
+    .chip { border: 1px solid rgba(58,37,25,.22); background: none; border-radius: 99px; padding: 8px 14px; font-size: 13px; cursor: pointer; }
+    .chip[aria-pressed="true"] { background: var(--ink); color: var(--ivory); border-color: var(--ink); }
+    .chip em { font-style: normal; opacity: .6; margin-left: 4px; }
+    .search { min-width: 220px; flex: 1; max-width: 320px; border: 1px solid rgba(58,37,25,.22); background: var(--ivory); border-radius: 99px; padding: 10px 16px; font-size: 14px; }
+    @media (max-width: 600px) { .search { max-width: none; } }
+
+    .list { display: grid; gap: 10px; padding-bottom: 60px; }
+    .row { display: grid; grid-template-columns: 64px 1fr auto; gap: 16px; align-items: center; width: 100%; text-align: left; background: var(--ivory); border: 1px solid transparent; border-radius: 20px; padding: 14px 18px 14px 14px; cursor: pointer; transition: border-color .2s, transform .25s var(--ease); }
+    .row:hover { border-color: rgba(58,37,25,.2); transform: translateY(-1px); }
+    .date { background: var(--espresso); color: var(--ivory); border-radius: 14px; text-align: center; padding: 8px 0; }
+    .date small { display: block; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--caramel); }
+    .date b { display: block; font-family: var(--serif); font-size: 26px; font-weight: 500; line-height: 1; }
+    .row h3 { font-size: 15px; font-weight: 600; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .row p { font-size: 13px; color: var(--muted); }
+    .badge { font-size: 10px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; border-radius: 99px; padding: 3px 9px; }
+    .b-new { background: var(--caramel); color: var(--espresso); }
+    .b-paid { background: rgba(111,122,85,.16); color: var(--sage); }
+    .b-done { background: rgba(58,37,25,.08); color: var(--muted); }
+    .b-cancel { background: rgba(165,82,58,.12); color: var(--rust); }
+    .amt { text-align: right; font-size: 12px; color: var(--muted); white-space: nowrap; }
+    .amt b { display: block; font-family: var(--serif); font-size: 22px; font-weight: 500; color: var(--ink); }
+    .row.is-cancelled { opacity: .55; }
+    .empty { text-align: center; padding: 50px 20px; color: var(--muted); font-family: var(--serif); font-style: italic; font-size: 22px; }
+    @media (max-width: 560px) { .row { grid-template-columns: 54px 1fr; } .amt { grid-column: 2; text-align: left; } .amt b { display: inline; margin-right: 6px; } }
+
+    /* detail drawer */
+    .scrim { position: fixed; inset: 0; background: rgba(20,12,8,.5); opacity: 0; visibility: hidden; transition: opacity .3s, visibility .3s; z-index: 20; }
+    .drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(100%, 440px); background: var(--ivory); z-index: 21; transform: translateX(100%); transition: transform .45s var(--ease); overflow: auto; padding: 24px; box-shadow: -30px 0 60px -30px rgba(0,0,0,.4); }
+    .open .scrim { opacity: 1; visibility: visible; }
+    .open .drawer { transform: none; }
+    .drawer .close { float: right; border: 0; background: var(--linen); width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 18px; }
+    .drawer .ref { font-size: 12px; letter-spacing: .14em; color: var(--chestnut); }
+    .drawer h2 { font-family: var(--serif); font-weight: 400; font-size: 38px; line-height: 1.05; margin: 8px 0 4px; }
+    .drawer .when { color: var(--muted); margin-bottom: 18px; }
+    .drawer dl { display: grid; grid-template-columns: auto 1fr; gap: 10px 16px; margin: 0 0 18px; padding: 16px 0; border-block: 1px solid rgba(58,37,25,.12); font-size: 14px; }
+    .drawer dt { color: var(--muted); }
+    .drawer dd { margin: 0; text-align: right; }
+    .drawer .note { background: var(--linen); border-radius: 14px; padding: 14px; font-size: 14px; margin-bottom: 18px; }
+    .contact { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 18px; }
+    .contact a { text-align: center; text-decoration: none; border: 1px solid rgba(58,37,25,.2); border-radius: 14px; padding: 10px 6px; font-size: 13px; }
+    .contact a:hover { background: var(--linen); }
+    .actions { display: grid; gap: 8px; }
+    .act { border-radius: 99px; padding: 14px; font-size: 14px; font-weight: 500; cursor: pointer; border: 1px solid var(--ink); background: var(--ink); color: var(--ivory); }
+    .act.secondary { background: none; color: var(--rust); border-color: rgba(165,82,58,.4); }
+    .act:disabled { opacity: .4; cursor: default; }
+    .foot { font-size: 12px; color: var(--muted); text-align: center; padding: 0 0 40px; }
+    .foot button { background: none; border: 0; text-decoration: underline; color: var(--muted); cursor: pointer; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <div class="top__bar">
+        <a class="wordmark" href="index.html"><small>braids by</small><span>ANITA</span></a>
+        <div class="top__right">
+          <span class="tag">Demo data</span>
+          <a class="ghost" href="index.html#book">Booking page</a>
+        </div>
+      </div>
+      <div class="hello">
+        <p id="today"></p>
+        <h1 id="greet">Hello, <i>Anita</i></h1>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="stats" aria-label="Summary">
+      <div class="stat"><small>Upcoming</small><b id="st-up">0</b><span>appointments</span></div>
+      <div class="stat"><small>Deposits collected</small><b id="st-dep">$0</b><span>on upcoming bookings</span></div>
+      <div class="stat"><small>Balance due</small><b id="st-bal">$0</b><span>at appointments</span></div>
+      <div class="stat"><small>Most booked</small><b id="st-top" style="font-size:24px;line-height:1.3">—</b><span id="st-top-n"></span></div>
+    </section>
+
+    <section class="rev" aria-labelledby="rev-title">
+      <div class="rev__head">
+        <div>
+          <h2 id="rev-title">Projected revenue</h2>
+          <div class="legend" aria-hidden="true">
+            <span><i style="background:#8C4A26"></i>Earned</span>
+            <span><i style="background:#C98642"></i>Booked</span>
+          </div>
+        </div>
+        <div class="rev__kpis">
+          <div><small>Last 30 days</small><b id="k-earned">$0</b></div>
+          <div><small>Next 30 days, booked</small><b id="k-booked">$0</b></div>
+        </div>
+      </div>
+      <div class="chart" id="chart"><div class="tip" id="tip" role="status"></div></div>
+      <p class="note">Weekly totals, before deposits. Booked weeks are projected from confirmed appointments and can still change.</p>
+      <details>
+        <summary>View as table</summary>
+        <table><thead><tr><th scope="col">Week of</th><th scope="col">Earned</th><th scope="col">Booked</th><th scope="col">Appointments</th></tr></thead><tbody id="rev-table"></tbody></table>
+      </details>
+    </section>
+
+    <div class="days" id="days" aria-label="Next two weeks"></div>
+
+    <div class="controls">
+      <div class="filters" role="group" aria-label="Filter bookings">
+        <button class="chip" data-f="upcoming" aria-pressed="true">Upcoming<em id="c-upcoming"></em></button>
+        <button class="chip" data-f="past" aria-pressed="false">Past<em id="c-past"></em></button>
+        <button class="chip" data-f="cancelled" aria-pressed="false">Cancelled<em id="c-cancelled"></em></button>
+        <button class="chip" data-f="all" aria-pressed="false">All<em id="c-all"></em></button>
+      </div>
+      <input class="search" id="search" type="search" placeholder="Search clients or styles" aria-label="Search bookings">
+    </div>
+
+    <section class="list" id="list" aria-live="polite"></section>
+  </main>
+
+  <p class="foot">Mockup only: bookings made on the demo site are saved in this browser. <button id="reset" type="button">Reset demo data</button></p>
+
+  <div class="scrim" id="scrim"></div>
+  <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="d-name" hidden></aside>
+
+  <script>
+  (function () {
+    var STORE = 'anita-bookings-demo', STATUS = 'anita-status-demo';
+    function read(k, d) { try { return JSON.parse(localStorage.getItem(k)) || d; } catch (e) { return d; } }
+    function write(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+
+    function iso(offset) { var d = new Date(); d.setHours(12, 0, 0, 0); d.setDate(d.getDate() + offset); return d.toISOString().slice(0, 10); }
+    // sample bookings, dated relative to today so the demo always looks current
+    var SAMPLE = [
+      { id: 'BBA-7Q2LM', name: 'Jasmine Carter', phone: '404-555-0142', email: 'jasmine@example.com', styleName: 'Knotless braids', size: 'Medium', addons: ['Curls'], date: iso(1), time: 'Morning', total: 185, deposit: 25, notes: 'Mid-back length. Wants honey blonde 27/30 mix.' },
+      { id: 'BBA-3KD9P', name: 'Aaliyah Brooks', phone: '470-555-0187', email: 'aaliyah@example.com', styleName: 'Goddess / soft locs', size: 'Small', addons: [], date: iso(2), time: 'Afternoon', total: 175, deposit: 25, notes: '' },
+      { id: 'BBA-X81RT', name: 'Imani Reed', phone: '678-555-0113', email: 'imani@example.com', styleName: 'Box braids', size: 'Large', addons: ['Beads'], date: iso(4), time: 'Morning', total: 120, deposit: 25, notes: 'First time client, referred by Jasmine.' },
+      { id: 'BBA-5MN2C', name: 'Kayla Johnson', phone: '404-555-0176', email: 'kayla@example.com', styleName: 'Knotless braids', size: 'Small', addons: ['Knee length', 'Curls'], date: iso(6), time: 'Morning', total: 205, deposit: 25, notes: 'Knee length, bring extra hair.' },
+      { id: 'BBA-QW45Z', name: 'Destiny Moore', phone: '770-555-0129', email: 'destiny@example.com', styleName: 'Knotless braids', size: 'Large', addons: [], date: iso(9), time: 'Evening', total: 145, deposit: 25, notes: '' },
+      { id: 'BBA-HJ6KS', name: 'Nia Thompson', phone: '470-555-0165', email: 'nia@example.com', styleName: 'Box braids', size: 'Medium', addons: [], date: iso(12), time: 'Afternoon', total: 130, deposit: 25, notes: '' },
+      { id: 'BBA-PL3VA', name: 'Tiana Wright', phone: '678-555-0198', email: 'tiana@example.com', styleName: 'Goddess / soft locs', size: 'Medium', addons: ['Curls'], date: iso(-3), time: 'Morning', total: 155, deposit: 25, notes: '' },
+      { id: 'BBA-ZE8YB', name: 'Morgan Davis', phone: '404-555-0151', email: 'morgan@example.com', styleName: 'Knotless braids', size: 'Medium', addons: [], date: iso(-8), time: 'Afternoon', total: 175, deposit: 25, notes: '' },
+      { id: 'BBA-R2T7N', name: 'Brianna Hall', phone: '770-555-0104', email: 'brianna@example.com', styleName: 'Box braids', size: 'Small', addons: [], date: iso(5), time: 'Evening', total: 150, deposit: 25, notes: 'Had to reschedule.', status: 'cancelled' }
+    ];
+
+    // filler bookings: steady history, a pipeline that thins out further ahead (as real bookings do)
+    (function () {
+      var names = ['Ashley Green', 'Kennedy Scott', 'Maya Lewis', 'Jordan Hill', 'Simone Baker', 'Taylor Young', 'Erin Adams', 'Zoe Mitchell', 'Ciara Nelson', 'Gabrielle King', 'Amber Collins', 'Lauren Price'];
+      var menu = [['Knotless braids', { Small: 185, Medium: 175, Large: 145 }], ['Box braids', { Small: 150, Medium: 130, Large: 110 }], ['Goddess / soft locs', { Small: 175, Medium: 145, Large: 115 }]];
+      var sizes = ['Small', 'Medium', 'Large'], times = ['Morning', 'Afternoon', 'Evening'];
+      var seed = 7; function rnd() { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; }
+      var perWeek = { '-6': 3, '-5': 4, '-4': 3, '-3': 4, '-2': 4, '-1': 3, '1': 2, '2': 2, '3': 2, '4': 1, '5': 1 };
+      var n = 0;
+      Object.keys(perWeek).forEach(function (w) {
+        for (var i = 0; i < perWeek[w]; i++) {
+          var m = menu[Math.floor(rnd() * 3)], sz = sizes[Math.floor(rnd() * 3)], add = rnd() < .35 ? ['Curls'] : [];
+          var nm = names[n++ % names.length];
+          SAMPLE.push({ id: 'BBA-S' + (100 + n), name: nm, phone: '404-555-01' + (10 + n), email: nm.split(' ')[0].toLowerCase() + '@example.com',
+            styleName: m[0], size: sz, addons: add, date: iso(+w * 7 + 1 + Math.floor(rnd() * 6)), time: times[Math.floor(rnd() * 3)],
+            total: m[1][sz] + add.length * 10, deposit: 25, notes: '' });
+        }
+      });
+    })();
+
+    var filter = 'upcoming', day = null, query = '';
+    var today = iso(0);
+    function all() {
+      var st = read(STATUS, {});
+      var mine = read(STORE, []).map(function (b) { b.isNew = true; return b; });
+      return SAMPLE.concat(mine).map(function (b) {
+        var c = Object.assign({}, b);
+        c.status = st[b.id] || b.status || (b.date < today ? 'completed' : 'confirmed');
+        return c;
+      }).sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : 0; });
+    }
+    function d(v) { var p = v.split('-'); return new Date(p[0], p[1] - 1, p[2]); }
+    function money(n) { return '$' + n.toLocaleString(); }
+    function esc(t) { var x = document.createElement('div'); x.textContent = t == null ? '' : t; return x.innerHTML; }
+    function isUpcoming(b) { return b.status === 'confirmed' && b.date >= today; }
+
+    var now = new Date();
+    document.getElementById('today').textContent = now.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
+    var hr = now.getHours();
+    document.getElementById('greet').innerHTML = (hr < 12 ? 'Good morning' : hr < 17 ? 'Good afternoon' : 'Good evening') + ', <i>Anita</i>';
+
+    function render() {
+      var list = all();
+      var up = list.filter(isUpcoming);
+      document.getElementById('st-up').textContent = up.length;
+      document.getElementById('st-dep').textContent = money(up.reduce(function (s, b) { return s + b.deposit; }, 0));
+      document.getElementById('st-bal').textContent = money(up.reduce(function (s, b) { return s + b.total - b.deposit; }, 0));
+      var counts = {};
+      list.filter(function (b) { return b.status !== 'cancelled'; }).forEach(function (b) { counts[b.styleName] = (counts[b.styleName] || 0) + 1; });
+      var top = Object.keys(counts).sort(function (a, b) { return counts[b] - counts[a]; })[0];
+      document.getElementById('st-top').textContent = top || '—';
+      document.getElementById('st-top-n').textContent = top ? counts[top] + ' bookings' : '';
+
+      renderChart(list);
+
+      // two-week strip
+      var days = document.getElementById('days'); days.innerHTML = '';
+      for (var i = 0; i < 14; i++) {
+        var v = iso(i), dt = d(v);
+        var has = up.some(function (b) { return b.date === v; });
+        var btn = document.createElement('button');
+        btn.className = 'day' + (has ? ' has' : '');
+        btn.setAttribute('aria-pressed', day === v);
+        btn.setAttribute('aria-label', dt.toDateString() + (has ? ', has bookings' : ''));
+        btn.innerHTML = '<small>' + (i === 0 ? 'Today' : dt.toLocaleDateString(undefined, { weekday: 'short' })) + '</small><b>' + dt.getDate() + '</b><i></i>';
+        btn.onclick = (function (v) { return function () { day = day === v ? null : v; if (day) setFilter('all', true); render(); }; })(v);
+        days.appendChild(btn);
+      }
+
+      var groups = { upcoming: up, past: list.filter(function (b) { return b.status === 'completed' || (b.status === 'confirmed' && b.date < today); }), cancelled: list.filter(function (b) { return b.status === 'cancelled'; }), all: list };
+      Object.keys(groups).forEach(function (k) { document.getElementById('c-' + k).textContent = groups[k].length; });
+      var shown = groups[filter].filter(function (b) {
+        if (day && b.date !== day) return false;
+        if (!query) return true;
+        return (b.name + ' ' + b.styleName + ' ' + b.id).toLowerCase().indexOf(query) > -1;
+      });
+      if (filter === 'past') shown.reverse();
+
+      var el = document.getElementById('list'); el.innerHTML = '';
+      if (!shown.length) { el.innerHTML = '<p class="empty">No bookings here yet.</p>'; return; }
+      shown.forEach(function (b) {
+        var dt = d(b.date);
+        var badge = b.status === 'cancelled' ? '<span class="badge b-cancel">Cancelled</span>' : b.status === 'completed' ? '<span class="badge b-done">Completed</span>' : '<span class="badge b-paid">Deposit paid</span>';
+        var row = document.createElement('button');
+        row.className = 'row' + (b.status === 'cancelled' ? ' is-cancelled' : '');
+        row.innerHTML =
+          '<div class="date"><small>' + dt.toLocaleDateString(undefined, { month: 'short' }) + '</small><b>' + dt.getDate() + '</b></div>' +
+          '<div><h3>' + esc(b.name) + (b.isNew ? ' <span class="badge b-new">New</span>' : '') + ' ' + badge + '</h3>' +
+          '<p>' + esc(b.styleName) + ' · ' + esc(b.size) + (b.addons.length ? ' + ' + esc(b.addons.join(', ')) : '') + '</p>' +
+          '<p>' + dt.toLocaleDateString(undefined, { weekday: 'long' }) + ' · ' + esc(b.time) + '</p></div>' +
+          '<div class="amt"><b>' + money(b.total) + '</b>' + (b.status === 'confirmed' ? money(b.total - b.deposit) + ' due' : b.status === 'completed' ? 'paid' : money(b.deposit) + ' deposit') + '</div>';
+        row.onclick = function () { openDrawer(b); };
+        el.appendChild(row);
+      });
+    }
+
+    // ---------- projected revenue: 6 weeks back, this week, 5 weeks ahead ----------
+    var EARNED = '#8C4A26', BOOKED = '#C98642';
+    function weekStart(v) { var x = d(v); x.setDate(x.getDate() - ((x.getDay() + 6) % 7)); return x; }
+    function key(x) { return x.getFullYear() + '-' + String(x.getMonth() + 1).padStart(2, '0') + '-' + String(x.getDate()).padStart(2, '0'); }
+    function renderChart(list) {
+      var start = weekStart(today); start.setDate(start.getDate() - 42);
+      var weeks = [];
+      for (var i = 0; i < 12; i++) { var w = new Date(start); w.setDate(start.getDate() + i * 7); weeks.push({ start: w, k: key(w), earned: 0, booked: 0, n: 0 }); }
+      list.forEach(function (b) {
+        if (b.status === 'cancelled') return;
+        var wk = weeks.filter(function (w) { return w.k === key(weekStart(b.date)); })[0];
+        if (!wk) return;
+        if (b.status === 'completed' || b.date < today) wk.earned += b.total; else wk.booked += b.total;
+        wk.n++;
+      });
+      var plus30 = iso(30), minus30 = iso(-30);
+      document.getElementById('k-earned').textContent = money(list.filter(function (b) { return b.status !== 'cancelled' && b.date < today && b.date >= minus30; }).reduce(function (s, b) { return s + b.total; }, 0));
+      document.getElementById('k-booked').textContent = money(list.filter(function (b) { return b.status === 'confirmed' && b.date >= today && b.date <= plus30; }).reduce(function (s, b) { return s + b.total; }, 0));
+
+      var box = document.getElementById('chart'), tip = document.getElementById('tip');
+      var old = box.querySelector('svg'); if (old) old.remove();
+      var W = Math.max(300, box.clientWidth), H = 240, padL = 44, padR = 8, padT = 22, padB = 26;
+      var max = Math.max.apply(null, weeks.map(function (w) { return w.earned + w.booked; }));
+      var step = max > 600 ? 200 : 100, top = Math.max(step, Math.ceil(max / step) * step);
+      var y = function (v) { return padT + (H - padT - padB) * (1 - v / top); };
+      var bw = (W - padL - padR) / weeks.length, barW = Math.min(36, bw * .56);
+      var NS = 'http://www.w3.org/2000/svg';
+      function el(n, a, t) { var e = document.createElementNS(NS, n); for (var k in a) e.setAttribute(k, a[k]); if (t != null) e.textContent = t; return e; }
+      var svg = el('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': 'Weekly revenue for the last 6 weeks and booked revenue for the next 6 weeks' });
+      var g = el('g', { class: 'grid' }), ax = el('g', { class: 'axis' });
+      for (var v = 0; v <= top; v += step) {
+        g.appendChild(el('line', { x1: padL, x2: W - padR, y1: y(v), y2: y(v) }));
+        ax.appendChild(el('text', { x: padL - 8, y: y(v) + 4, 'text-anchor': 'end' }, '$' + v));
+      }
+      svg.appendChild(g); svg.appendChild(ax);
+      var thisWeek = key(weekStart(today));
+      weeks.forEach(function (w, i) {
+        var cx = padL + bw * i + bw / 2, x = cx - barW / 2, base = y(0);
+        // rounded top only on the outermost segment; 2px gap between stacked segments
+        function seg(val, from, color, roundTop) {
+          if (!val) return from;
+          var y1 = y(from + val), yb = from ? y(from) - 2 : base, h = yb - y1;
+          if (h <= 0) return from + val;
+          var r = roundTop ? Math.min(4, h) : 0;
+          var dPath = 'M' + x + ' ' + yb + 'V' + (y1 + r) + (r ? 'Q' + x + ' ' + y1 + ' ' + (x + r) + ' ' + y1 : '') + 'H' + (x + barW - r) + (r ? 'Q' + (x + barW) + ' ' + y1 + ' ' + (x + barW) + ' ' + (y1 + r) : '') + 'V' + yb + 'Z';
+          svg.appendChild(el('path', { d: dPath, fill: color }));
+          return from + val;
+        }
+        var after = seg(w.earned, 0, EARNED, !w.booked);
+        seg(w.booked, after, BOOKED, true);
+        var lbl = w.start.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+        if (i % 2 === 0 || W > 640) ax.appendChild(el('text', { x: cx, y: H - 6, 'text-anchor': 'middle' }, lbl));
+        if (w.k === thisWeek) {
+          var tg = el('g', { class: 'today' });
+          tg.appendChild(el('line', { x1: padL + bw * i, x2: padL + bw * i, y1: padT - 10, y2: H - padB }));
+          tg.appendChild(el('text', { x: padL + bw * i + 4, y: padT - 12 }, 'THIS WEEK'));
+          svg.appendChild(tg);
+        }
+        var hit = el('rect', { class: 'hit', x: padL + bw * i, y: padT, width: bw, height: H - padT - padB, rx: 6, tabindex: 0,
+          'aria-label': 'Week of ' + lbl + ': ' + money(w.earned) + ' earned, ' + money(w.booked) + ' booked, ' + w.n + ' appointments' });
+        function show() {
+          tip.innerHTML = '<div>Week of ' + lbl + '</div><b>' + money(w.earned + w.booked) + '</b>' +
+            (w.earned ? '<div><i style="background:' + EARNED + '"></i>Earned ' + money(w.earned) + '</div>' : '') +
+            (w.booked ? '<div><i style="background:' + BOOKED + '"></i>Booked ' + money(w.booked) + '</div>' : '') +
+            '<div>' + w.n + ' appointment' + (w.n === 1 ? '' : 's') + '</div>';
+          var tx = Math.min(Math.max(cx, 80), W - 80);
+          tip.style.left = tx + 'px'; tip.style.top = (y(w.earned + w.booked) - 8) + 'px';
+          tip.classList.add('show');
+        }
+        hit.addEventListener('mouseenter', show); hit.addEventListener('focus', show);
+        hit.addEventListener('mouseleave', function () { tip.classList.remove('show'); });
+        hit.addEventListener('blur', function () { tip.classList.remove('show'); });
+        svg.appendChild(hit);
+      });
+      box.appendChild(svg);
+
+      document.getElementById('rev-table').innerHTML = weeks.map(function (w) {
+        return '<tr><td>' + w.start.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) + '</td><td>' + money(w.earned) + '</td><td>' + money(w.booked) + '</td><td>' + w.n + '</td></tr>';
+      }).join('');
+    }
+    var rt; window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(function () { renderChart(all()); }, 150); });
+
+    function setFilter(f, keepDay) {
+      filter = f; if (!keepDay) day = null;
+      document.querySelectorAll('.chip').forEach(function (c) { c.setAttribute('aria-pressed', c.dataset.f === f); });
+    }
+    document.querySelectorAll('.chip').forEach(function (c) { c.onclick = function () { setFilter(c.dataset.f); render(); }; });
+    document.getElementById('search').addEventListener('input', function (e) { query = e.target.value.trim().toLowerCase(); render(); });
+
+    // drawer
+    var drawer = document.getElementById('drawer'), lastFocus;
+    function closeDrawer() { document.body.classList.remove('open'); setTimeout(function () { drawer.hidden = true; }, 400); if (lastFocus) lastFocus.focus(); }
+    function setStatus(id, s) { var st = read(STATUS, {}); st[id] = s; write(STATUS, st); }
+    function openDrawer(b) {
+      lastFocus = document.activeElement;
+      var dt = d(b.date), tel = b.phone.replace(/[^0-9+]/g, '');
+      drawer.innerHTML =
+        '<button class="close" aria-label="Close">×</button>' +
+        '<span class="ref">' + esc(b.id) + '</span>' +
+        '<h2 id="d-name">' + esc(b.name) + '</h2>' +
+        '<p class="when">' + dt.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' }) + ' · ' + esc(b.time) + '</p>' +
+        '<div class="contact"><a href="tel:' + tel + '">Call</a><a href="sms:' + tel + '">Text</a><a href="mailto:' + esc(b.email) + '">Email</a></div>' +
+        '<dl><dt>Service</dt><dd>' + esc(b.styleName) + '</dd><dt>Size</dt><dd>' + esc(b.size) + '</dd>' +
+        '<dt>Add-ons</dt><dd>' + esc(b.addons.join(', ') || 'None') + '</dd>' +
+        '<dt>Total</dt><dd>' + money(b.total) + '</dd><dt>Deposit</dt><dd>' + money(b.deposit) + ' · paid online</dd>' +
+        '<dt>Balance</dt><dd>' + (b.status === 'completed' ? 'Paid' : money(b.total - b.deposit) + ' at appointment') + '</dd>' +
+        '<dt>Phone</dt><dd>' + esc(b.phone) + '</dd><dt>Email</dt><dd>' + esc(b.email) + '</dd></dl>' +
+        (b.notes ? '<div class="note"><strong>Client notes</strong><br>' + esc(b.notes) + '</div>' : '') +
+        '<div class="actions">' +
+        '<button class="act" id="d-done"' + (b.status !== 'confirmed' ? ' disabled' : '') + '>Mark as completed</button>' +
+        '<button class="act secondary" id="d-cancel"' + (b.status !== 'confirmed' ? ' disabled' : '') + '>Cancel booking</button></div>';
+      drawer.hidden = false;
+      requestAnimationFrame(function () { document.body.classList.add('open'); });
+      drawer.querySelector('.close').onclick = closeDrawer;
+      drawer.querySelector('#d-done').onclick = function () { setStatus(b.id, 'completed'); closeDrawer(); render(); };
+      drawer.querySelector('#d-cancel').onclick = function () { if (confirm('Cancel ' + b.name + '\'s booking?')) { setStatus(b.id, 'cancelled'); closeDrawer(); render(); } };
+      drawer.querySelector('.close').focus();
+    }
+    document.getElementById('scrim').onclick = closeDrawer;
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && document.body.classList.contains('open')) closeDrawer(); });
+
+    document.getElementById('reset').onclick = function () {
+      if (!confirm('Clear demo bookings and status changes?')) return;
+      try { localStorage.removeItem(STORE); localStorage.removeItem(STATUS); } catch (e) {}
+      render();
+    };
+
+    render();
+  })();
+  </script>
+</body>
+</html>
