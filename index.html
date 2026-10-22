@@ -402,7 +402,7 @@
 
   <header class="header" id="top">
     <div class="container header__inner">
-      <a class="wordmark" href="#top" aria-label="Braids by Anita home"><small>braids by</small><span>ANITA</span></a>
+      <a class="wordmark" href="#hero" aria-label="Braids by Anita home"><small>braids by</small><span>ANITA</span></a>
       <nav class="nav" aria-label="Main">
         <a class="swap" href="#services"><span>Services</span><span aria-hidden="true">Services</span></a>
         <a class="swap" href="#policies"><span>Policies</span><span aria-hidden="true">Policies</span></a>
@@ -643,7 +643,7 @@
     <div class="container">
       <div class="footer__grid">
         <div class="footer__brand">
-          <a class="wordmark" href="#top"><small>braids by</small><span>ANITA</span></a>
+          <a class="wordmark" href="#hero"><small>braids by</small><span>ANITA</span></a>
           <p style="margin-top:16px;color:var(--sand);font-size:14px;max-width:30ch">Luxury braids, locs and twists in Marietta, Georgia.</p>
         </div>
         <div>
@@ -704,6 +704,21 @@
     var root = document.documentElement;
     document.getElementById('year').textContent = new Date().getFullYear();
     var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Always open on the hero, and send the logo back to the very top.
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    function toTop(smooth) {
+      window.scrollTo({ top: 0, behavior: smooth && !reduce ? 'smooth' : 'auto' });
+      if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+    }
+    if (!location.hash || location.hash === '#top' || location.hash === '#hero') toTop(false);
+    else window.addEventListener('load', function () {
+      var t = document.getElementById(location.hash.slice(1));
+      if (t) setTimeout(function () { t.scrollIntoView({ behavior: 'instant' }); }, 0);
+    });
+    document.querySelectorAll('a[href="#hero"], a[href="#top"]').forEach(function (a) {
+      a.addEventListener('click', function (e) { e.preventDefault(); toTop(true); });
+    });
     var SVGNS = 'http://www.w3.org/2000/svg';
 
     function el(name, attrs) { var e = document.createElementNS(SVGNS, name); for (var k in attrs) e.setAttribute(k, attrs[k]); return e; }
