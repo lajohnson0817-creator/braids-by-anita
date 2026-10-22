@@ -88,6 +88,10 @@
     .btn:hover .arr { transform: translate(2px, 2px); }
     .btn--solid { background: var(--ivory); color: var(--espresso); border-color: var(--ivory); }
     .btn--solid::before { background: var(--caramel); }
+    .btn--solid::after { content: ""; position: absolute; top: 0; bottom: 0; width: 40%; left: -60%; z-index: 1; pointer-events: none;
+      background: linear-gradient(100deg, transparent, rgba(255,255,255,.65), transparent); transform: skewX(-20deg); animation: sheen 5.5s ease-in-out 2.4s infinite; }
+    .btn--solid:hover::after { animation-duration: 1.2s; }
+    @keyframes sheen { 0% { left: -60%; } 22%, 100% { left: 130%; } }
     .btn--line { color: var(--ivory); border-color: rgba(248,243,236,.5); }
     .btn--line::before { background: var(--ivory); }
     .btn--line:hover { color: var(--espresso); }
@@ -140,9 +144,28 @@
       padding: calc(var(--header-h) + 24px) var(--gutter) 90px; display: flex; align-items: center; }
     .rays { position: absolute; right: -8%; top: -12%; width: min(70vw, 760px); opacity: .22; pointer-events: none; color: var(--caramel); animation: spin 120s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .hero__copy { position: relative; z-index: 2; max-width: 880px; }
-    .hero h1 { font-size: clamp(56px, 9.6vw, 140px); margin: 18px 0 22px; }
-    .hero h1 b { display: block; font-family: var(--sans); font-weight: 400; font-size: .62em; letter-spacing: -.035em; line-height: 1; margin-top: .06em; }
+    .hero__copy { position: relative; z-index: 2; width: 100%; }
+    .hero h1 { font-size: clamp(64px, 13.5vw, 210px); line-height: .9; margin: 14px 0 26px; }
+    .hero h1 b { display: block; font-family: var(--sans); font-weight: 400; font-size: .66em; letter-spacing: -.045em; line-height: .95; margin-top: .02em; }
+
+    /* line-by-line mask reveal */
+    .line { display: block; overflow: hidden; padding: 0 .06em .14em 0; margin-bottom: -.14em; }
+    .line > span { display: inline-block; transform: translateY(105%) rotate(2deg); transform-origin: left bottom; animation: rise 1.3s var(--ease) forwards; animation-delay: var(--d, 0s); }
+    @keyframes rise { to { transform: none; } }
+    .fade-in { opacity: 0; transform: translateY(14px); animation: fadeUp 1s var(--ease) forwards; animation-delay: var(--d, 0s); }
+    @keyframes fadeUp { to { opacity: 1; transform: none; } }
+    .hero .eyebrow { letter-spacing: .6em; animation: track 1.6s var(--ease) .1s forwards; opacity: 0; }
+    @keyframes track { to { letter-spacing: .26em; opacity: 1; } }
+
+    /* gold shimmer sweeping across a word */
+    .line > span.shimmer { background: linear-gradient(100deg, var(--ivory) 0%, var(--ivory) 42%, #F4E3C3 47%, #C9A27A 50%, #F4E3C3 53%, var(--ivory) 58%, var(--ivory) 100%);
+      background-size: 300% 100%; background-position: 100% 0; -webkit-background-clip: text; background-clip: text; color: transparent;
+      animation: rise 1.3s var(--ease) forwards, shimmer 6s ease-in-out 1.8s infinite; animation-delay: var(--d, 0s), 1.8s; }
+    @keyframes shimmer { 0% { background-position: 100% 0; } 35%, 100% { background-position: 0 0; } }
+
+    /* cursor spotlight on the satin */
+    .hero::before { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: var(--spot, 0); transition: opacity .6s;
+      background: radial-gradient(520px circle at var(--mx, 50%) var(--my, 40%), rgba(214,176,128,.16), transparent 65%); }
     .hero .lede { max-width: 42ch; color: var(--sand); font-size: 16px; margin-bottom: 30px; }
     .hero__ctas { display: flex; flex-wrap: wrap; gap: 12px; }
     .hero__meta { position: absolute; left: var(--gutter); right: var(--gutter); bottom: 22px; display: flex; justify-content: space-between; font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: rgba(227,207,178,.7); z-index: 3; pointer-events: none; }
@@ -150,7 +173,7 @@
 
     @media (max-width: 900px) {
       .hero__inner { text-align: center; justify-content: center; }
-      .hero h1 { margin: 10px 0 14px; font-size: clamp(50px, 15vw, 80px); }
+      .hero h1 { margin: 10px 0 18px; font-size: clamp(58px, 18.5vw, 104px); }
       .hero .lede { margin: 0 auto 24px; font-size: 15px; }
       .hero__ctas { justify-content: center; }
       .rays { width: 120vw; right: -40%; top: -20%; }
@@ -160,6 +183,11 @@
       html { scroll-behavior: auto; }
       .satin, .rays { animation: none; }
       .reveal { opacity: 1 !important; transform: none !important; }
+      .line > span, .fade-in, .hero .eyebrow, .shimmer { animation: none !important; opacity: 1 !important; transform: none !important; letter-spacing: .26em; }
+      .hero h1 b.shimmer, .shimmer { color: var(--ivory); background: none; }
+      .hl { background-size: 100% 100% !important; }
+      .w { opacity: 1 !important; filter: none !important; }
+      .btn--solid::after { display: none; }
     }
 
     /* ---------- statement ---------- */
@@ -171,6 +199,17 @@
     .facts li { border: 1px solid rgba(58,37,25,.25); border-radius: 99px; padding: 9px 18px; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; }
 
     .reveal { opacity: 0; transform: translateY(26px); transition: opacity 1s var(--ease), transform 1s var(--ease); }
+
+    /* highlighter that draws in when its section arrives */
+    .hl { font-style: inherit; color: inherit; padding: 0 .08em; margin: 0 -.04em; border-radius: .12em;
+      background: linear-gradient(transparent 58%, rgba(201,162,122,.5) 58%, rgba(201,162,122,.5) 90%, transparent 90%) no-repeat 0 0 / 0% 100%;
+      transition: background-size 1.1s var(--ease) .35s; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+    .satin .hl, .final .hl { background-image: linear-gradient(transparent 60%, rgba(201,162,122,.38) 60%, rgba(201,162,122,.38) 88%, transparent 88%); }
+    .is-in .hl, .hl.is-in { background-size: 100% 100%; }
+
+    /* words light up one by one as you scroll */
+    .w { opacity: .14; filter: blur(2px); transition: opacity .5s ease, filter .5s ease; }
+    .w.on { opacity: 1; filter: none; }
     .reveal.is-in { opacity: 1; transform: none; }
 
     /* ---------- services / price list ---------- */
@@ -398,9 +437,9 @@
         <div class="hero__inner">
           <div class="hero__copy">
             <p class="eyebrow">Braids · Locs · Twists — Marietta, GA</p>
-            <h1 class="display"><i>Every strand,</i><b>intentional.</b></h1>
-            <p class="lede">Luxury protective styles by Anita: knotless and box braids, goddess and soft locs, and twists, crafted for your hair and your budget.</p>
-            <div class="hero__ctas">
+            <h1 class="display"><span class="line"><span style="--d:.25s"><i>Every strand,</i></span></span><b class="line"><span class="shimmer" style="--d:.45s">intentional.</span></b></h1>
+            <p class="lede fade-in" style="--d:.9s">Luxury protective styles by Anita: knotless and box braids, goddess and soft locs, and twists, crafted for your hair and your budget.</p>
+            <div class="hero__ctas fade-in" style="--d:1.1s">
               <a class="btn btn--solid" href="#book">Book your appointment <span class="arr" aria-hidden="true">↘</span></a>
               <a class="btn btn--line" href="#services">View prices</a>
             </div>
@@ -413,7 +452,7 @@
     <section class="statement paper">
       <div class="container reveal">
         <svg class="flower" aria-hidden="true"><use href="#flower"/></svg>
-        <p class="display">Protective styles that look like <i>luxury</i> and feel like <i>home.</i></p>
+        <p class="display" data-words>Protective styles that look like <i><mark class="hl">luxury</mark></i> and feel like <i><mark class="hl">home.</mark></i></p>
         <ul class="facts">
           <li>Marietta, GA</li>
           <li>Braids · Locs · Twists</li>
@@ -426,7 +465,7 @@
     <section class="services satin grain" id="services">
       <div class="container">
         <header class="sec-head reveal">
-          <h2 class="display"><i>The</i> price list<b>services &amp; sizes</b></h2>
+          <h2 class="display"><i>The</i> <mark class="hl">price list</mark><b>services &amp; sizes</b></h2>
           <p>Choose a style to see sizes and prices. Time may vary by size and length. Add curls, beads or knee length for $10 each.</p>
         </header>
 
@@ -493,7 +532,7 @@
     <section class="book paper" id="book">
       <div class="container">
         <header class="sec-head reveal">
-          <h2 class="display">Book <i>your look</i></h2>
+          <h2 class="display">Book <i><mark class="hl">your look</mark></i></h2>
           <p>Three quick steps. A deposit holds your date, and it comes off your total.</p>
         </header>
 
@@ -558,7 +597,7 @@
     <section class="policies satin grain" id="policies">
       <div class="container">
         <header class="sec-head reveal">
-          <h2 class="display"><i>Before</i> you book<b>please read</b></h2>
+          <h2 class="display"><i>Before</i> <mark class="hl">you book</mark><b>please read</b></h2>
           <p>A few things that keep every appointment smooth for you and for Anita.</p>
         </header>
         <ul class="pol-grid">
@@ -577,7 +616,7 @@
     <section class="gallery paper" id="work">
       <div class="container">
         <header class="sec-head reveal">
-          <h2 class="display"><i>The</i> work</h2>
+          <h2 class="display"><i>The</i> <mark class="hl">work</mark></h2>
           <p>A look at recent styles. See the latest on Instagram.</p>
         </header>
       </div>
@@ -594,7 +633,7 @@
     <section class="final satin grain">
       <div class="container reveal">
         <span class="script">See you in the chair</span>
-        <h2 class="display"><i>Ready</i> for<b>your next look?</b></h2>
+        <h2 class="display"><i>Ready</i> for<b><mark class="hl">your next look?</mark></b></h2>
         <a class="btn btn--solid btn--lg" href="#book">Book your appointment <span class="arr" aria-hidden="true">↘</span></a>
       </div>
     </section>
@@ -712,9 +751,44 @@
     document.querySelectorAll('.menu a').forEach(function (a) { a.addEventListener('click', function () { setMenu(false); }); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') setMenu(false); });
 
+    // ---------- hero spotlight follows the cursor (mouse/trackpad only) ----------
+    if (!reduce && window.matchMedia('(pointer: fine)').matches) {
+      hero.addEventListener('pointermove', function (e) {
+        var r = hero.getBoundingClientRect();
+        hero.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+        hero.style.setProperty('--my', (e.clientY - r.top) + 'px');
+        hero.style.setProperty('--spot', 1);
+      });
+      hero.addEventListener('pointerleave', function () { hero.style.setProperty('--spot', 0); });
+    }
+
+    // ---------- statement: wrap each word, light them up with scroll ----------
+    document.querySelectorAll('[data-words]').forEach(function (block) {
+      var walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT), nodes = [], n;
+      while ((n = walker.nextNode())) nodes.push(n);
+      nodes.forEach(function (t) {
+        var frag = document.createDocumentFragment();
+        t.textContent.split(/(\s+)/).forEach(function (part) {
+          if (!part) return;
+          if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(part)); return; }
+          var sp = document.createElement('span'); sp.className = 'w'; sp.textContent = part; frag.appendChild(sp);
+        });
+        t.parentNode.replaceChild(frag, t);
+      });
+      var words = block.querySelectorAll('.w');
+      function light() {
+        var r = block.getBoundingClientRect(), vh = window.innerHeight;
+        var p = Math.max(0, Math.min(1, (vh * .9 - r.top) / (vh * .55)));
+        var on = Math.round(p * words.length);
+        words.forEach(function (w, i) { w.classList.toggle('on', i < on); });
+      }
+      if (reduce) words.forEach(function (w) { w.classList.add('on'); });
+      else { window.addEventListener('scroll', light, { passive: true }); light(); }
+    });
+
     // ---------- reveal ----------
     var io = new IntersectionObserver(function (es) { es.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('is-in'); io.unobserve(en.target); } }); }, { rootMargin: '0px 0px -8% 0px' });
-    document.querySelectorAll('.reveal').forEach(function (n) { io.observe(n); });
+    document.querySelectorAll('.reveal, .hl').forEach(function (n) { io.observe(n); });
 
     // ---------- service tabs ----------
     var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
