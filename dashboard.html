@@ -59,7 +59,8 @@
     .rev__kpis b { font-family: var(--serif); font-weight: 500; font-size: 30px; line-height: 1.1; color: var(--ink); }
     .legend { display: flex; gap: 18px; font-size: 13px; color: var(--muted); margin: 6px 0 4px; }
     .legend span { display: inline-flex; align-items: center; gap: 7px; }
-    .legend i { width: 12px; height: 12px; border-radius: 3px; }
+    .legend i { width: 22px; height: 0; border-top: 2px solid; }
+    .legend i.dash { border-top-style: dashed; }
     .chart { position: relative; }
     .chart svg { display: block; width: 100%; height: 240px; overflow: visible; }
     .chart .grid line { stroke: rgba(58,37,25,.1); }
@@ -67,7 +68,10 @@
     .chart .today line { stroke: var(--ink); stroke-dasharray: 3 3; }
     .chart .today text { font-size: 10px; letter-spacing: .12em; fill: var(--ink); font-family: var(--sans); }
     .chart .hit { fill: transparent; cursor: pointer; }
-    .chart .hit:hover, .chart .hit:focus { fill: rgba(58,37,25,.05); outline: none; }
+    .chart .hit:focus { outline: none; }
+    .chart .cross { stroke: rgba(58,37,25,.35); stroke-width: 1; opacity: 0; transition: opacity .15s; }
+    .chart .cross.show { opacity: 1; }
+    .chart .end text { font-family: var(--sans); font-size: 12px; fill: var(--ink); }
     .tip { position: absolute; pointer-events: none; background: var(--espresso); color: var(--ivory); border-radius: 12px; padding: 10px 12px; font-size: 12px; line-height: 1.5; white-space: nowrap; transform: translate(-50%, -100%); opacity: 0; transition: opacity .15s; z-index: 2; }
     .tip.show { opacity: 1; }
     .tip b { font-family: var(--serif); font-size: 18px; font-weight: 500; }
@@ -171,8 +175,8 @@
         <div>
           <h2 id="rev-title">Projected revenue</h2>
           <div class="legend" aria-hidden="true">
-            <span><i style="background:#8C4A26"></i>Earned</span>
-            <span><i style="background:#C98642"></i>Booked</span>
+            <span><i style="border-color:#8C4A26"></i>Earned</span>
+            <span><i class="dash" style="border-color:#C98642"></i>Projected from bookings</span>
           </div>
         </div>
         <div class="rev__kpis">
@@ -181,10 +185,10 @@
         </div>
       </div>
       <div class="chart" id="chart"><div class="tip" id="tip" role="status"></div></div>
-      <p class="note">Weekly totals, before deposits. Booked weeks are projected from confirmed appointments and can still change.</p>
+      <p class="note">Running total of revenue over 12 weeks, before deposits. The dashed line adds confirmed upcoming appointments and can still change.</p>
       <details>
         <summary>View as table</summary>
-        <table><thead><tr><th scope="col">Week of</th><th scope="col">Earned</th><th scope="col">Booked</th><th scope="col">Appointments</th></tr></thead><tbody id="rev-table"></tbody></table>
+        <table><thead><tr><th scope="col">Week of</th><th scope="col">Earned</th><th scope="col">Booked</th><th scope="col">Appointments</th><th scope="col">Running total</th></tr></thead><tbody id="rev-table"></tbody></table>
       </details>
     </section>
 
@@ -338,69 +342,95 @@
         if (b.status === 'completed' || b.date < today) wk.earned += b.total; else wk.booked += b.total;
         wk.n++;
       });
+      var run = 0;
+      weeks.forEach(function (w) { run += w.earned + w.booked; w.cum = run; });
+      var tw = weeks.map(function (w) { return w.k; }).indexOf(key(weekStart(today)));
+
       var plus30 = iso(30), minus30 = iso(-30);
       document.getElementById('k-earned').textContent = money(list.filter(function (b) { return b.status !== 'cancelled' && b.date < today && b.date >= minus30; }).reduce(function (s, b) { return s + b.total; }, 0));
       document.getElementById('k-booked').textContent = money(list.filter(function (b) { return b.status === 'confirmed' && b.date >= today && b.date <= plus30; }).reduce(function (s, b) { return s + b.total; }, 0));
 
       var box = document.getElementById('chart'), tip = document.getElementById('tip');
       var old = box.querySelector('svg'); if (old) old.remove();
-      var W = Math.max(300, box.clientWidth), H = 240, padL = 44, padR = 8, padT = 22, padB = 26;
-      var max = Math.max.apply(null, weeks.map(function (w) { return w.earned + w.booked; }));
-      var step = max > 600 ? 200 : 100, top = Math.max(step, Math.ceil(max / step) * step);
+      var W = Math.max(300, box.clientWidth), H = 240, padL = 50, padR = W > 520 ? 92 : 14, padT = 22, padB = 26;
+      var max = weeks[weeks.length - 1].cum;
+      var step = max > 4000 ? 2000 : max > 2000 ? 1000 : 500, top = Math.max(step, Math.ceil(max / step) * step);
       var y = function (v) { return padT + (H - padT - padB) * (1 - v / top); };
-      var bw = (W - padL - padR) / weeks.length, barW = Math.min(36, bw * .56);
+      var bw = (W - padL - padR) / weeks.length;
+      var xAt = function (i) { return padL + bw * i + bw / 2; };
       var NS = 'http://www.w3.org/2000/svg';
       function el(n, a, t) { var e = document.createElementNS(NS, n); for (var k in a) e.setAttribute(k, a[k]); if (t != null) e.textContent = t; return e; }
-      var svg = el('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': 'Weekly revenue for the last 6 weeks and booked revenue for the next 6 weeks' });
+      var svg = el('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': 'Running total of revenue: ' + money(tw > 0 ? weeks[tw - 1].cum : 0) + ' earned so far, projected to reach ' + money(max) + ' by the week of ' + weeks[11].start.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) });
       var g = el('g', { class: 'grid' }), ax = el('g', { class: 'axis' });
       for (var v = 0; v <= top; v += step) {
         g.appendChild(el('line', { x1: padL, x2: W - padR, y1: y(v), y2: y(v) }));
-        ax.appendChild(el('text', { x: padL - 8, y: y(v) + 4, 'text-anchor': 'end' }, '$' + v));
+        ax.appendChild(el('text', { x: padL - 8, y: y(v) + 4, 'text-anchor': 'end' }, v >= 1000 ? '$' + (v / 1000) + 'k' : '$' + v));
       }
       svg.appendChild(g); svg.appendChild(ax);
-      var thisWeek = key(weekStart(today));
+
+      // soft area under the earned line, then the lines: solid = earned, dashed = projected
+      var split = Math.max(0, tw - 1);
+      function pts(a, b) { var out = []; for (var i = a; i <= b; i++) out.push(xAt(i).toFixed(1) + ' ' + y(weeks[i].cum).toFixed(1)); return out; }
+      var earnedPts = pts(0, split);
+      svg.appendChild(el('path', { d: 'M' + xAt(0) + ' ' + y(0) + 'L' + earnedPts.join('L') + 'L' + xAt(split) + ' ' + y(0) + 'Z', fill: EARNED, 'fill-opacity': '.08' }));
+      svg.appendChild(el('path', { d: 'M' + pts(split, 11).join('L'), fill: 'none', stroke: BOOKED, 'stroke-width': 2, 'stroke-dasharray': '6 5', 'stroke-linecap': 'round' }));
+      svg.appendChild(el('path', { d: 'M' + earnedPts.join('L'), fill: 'none', stroke: EARNED, 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }));
+
+      // this-week marker
+      if (tw > -1) {
+        var tg = el('g', { class: 'today' }), tx = padL + bw * tw;
+        tg.appendChild(el('line', { x1: tx, x2: tx, y1: padT - 10, y2: H - padB }));
+        tg.appendChild(el('text', { x: tx + 4, y: padT - 12 }, 'THIS WEEK'));
+        svg.appendChild(tg);
+      }
+      // direct labels on the two ends that matter: earned so far, projected total
+      var endG = el('g', { class: 'end' });
+      [[split, EARNED, 'earned'], [11, BOOKED, 'projected']].forEach(function (e) {
+        var px = xAt(e[0]), py = y(weeks[e[0]].cum);
+        endG.appendChild(el('circle', { cx: px, cy: py, r: 5, fill: e[1], stroke: '#F8F3EC', 'stroke-width': 2 }));
+        if (padR > 40 || e[0] === split) {
+          var lx = e[0] === 11 ? px + 10 : px - 8, ly = e[0] === 11 ? py + 4 : py - 12;
+          endG.appendChild(el('text', { x: lx, y: ly, 'text-anchor': e[0] === 11 ? 'start' : 'end' }, money(weeks[e[0]].cum) + ' ' + e[2]));
+        }
+      });
+      svg.appendChild(endG);
+
       weeks.forEach(function (w, i) {
-        var cx = padL + bw * i + bw / 2, x = cx - barW / 2, base = y(0);
-        // rounded top only on the outermost segment; 2px gap between stacked segments
-        function seg(val, from, color, roundTop) {
-          if (!val) return from;
-          var y1 = y(from + val), yb = from ? y(from) - 2 : base, h = yb - y1;
-          if (h <= 0) return from + val;
-          var r = roundTop ? Math.min(4, h) : 0;
-          var dPath = 'M' + x + ' ' + yb + 'V' + (y1 + r) + (r ? 'Q' + x + ' ' + y1 + ' ' + (x + r) + ' ' + y1 : '') + 'H' + (x + barW - r) + (r ? 'Q' + (x + barW) + ' ' + y1 + ' ' + (x + barW) + ' ' + (y1 + r) : '') + 'V' + yb + 'Z';
-          svg.appendChild(el('path', { d: dPath, fill: color }));
-          return from + val;
-        }
-        var after = seg(w.earned, 0, EARNED, !w.booked);
-        seg(w.booked, after, BOOKED, true);
         var lbl = w.start.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-        if (i % 2 === 0 || W > 640) ax.appendChild(el('text', { x: cx, y: H - 6, 'text-anchor': 'middle' }, lbl));
-        if (w.k === thisWeek) {
-          var tg = el('g', { class: 'today' });
-          tg.appendChild(el('line', { x1: padL + bw * i, x2: padL + bw * i, y1: padT - 10, y2: H - padB }));
-          tg.appendChild(el('text', { x: padL + bw * i + 4, y: padT - 12 }, 'THIS WEEK'));
-          svg.appendChild(tg);
-        }
-        var hit = el('rect', { class: 'hit', x: padL + bw * i, y: padT, width: bw, height: H - padT - padB, rx: 6, tabindex: 0,
-          'aria-label': 'Week of ' + lbl + ': ' + money(w.earned) + ' earned, ' + money(w.booked) + ' booked, ' + w.n + ' appointments' });
+        if (i % 2 === 0 || W > 640) ax.appendChild(el('text', { x: xAt(i), y: H - 6, 'text-anchor': 'middle' }, lbl));
+      });
+
+      // crosshair + tooltip
+      var cross = el('line', { class: 'cross', x1: 0, x2: 0, y1: padT, y2: H - padB });
+      var dot = el('circle', { r: 5, stroke: '#F8F3EC', 'stroke-width': 2, opacity: 0 });
+      svg.appendChild(cross); svg.appendChild(dot);
+      weeks.forEach(function (w, i) {
+        var lbl = w.start.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+        var proj = i >= tw && tw > -1;
+        var hit = el('rect', { class: 'hit', x: padL + bw * i, y: padT, width: bw, height: H - padT - padB, tabindex: 0,
+          'aria-label': 'Week of ' + lbl + ': ' + money(w.earned + w.booked) + ' this week, ' + money(w.cum) + ' running total' + (proj ? ', projected' : '') });
         function show() {
-          tip.innerHTML = '<div>Week of ' + lbl + '</div><b>' + money(w.earned + w.booked) + '</b>' +
+          var cx = xAt(i), cy = y(w.cum);
+          cross.setAttribute('x1', cx); cross.setAttribute('x2', cx); cross.classList.add('show');
+          dot.setAttribute('cx', cx); dot.setAttribute('cy', cy); dot.setAttribute('fill', proj ? BOOKED : EARNED); dot.setAttribute('opacity', 1);
+          tip.innerHTML = '<div>Week of ' + lbl + (proj ? ' · projected' : '') + '</div><b>' + money(w.cum) + '</b> <span>running total</span>' +
             (w.earned ? '<div><i style="background:' + EARNED + '"></i>Earned ' + money(w.earned) + '</div>' : '') +
             (w.booked ? '<div><i style="background:' + BOOKED + '"></i>Booked ' + money(w.booked) + '</div>' : '') +
             '<div>' + w.n + ' appointment' + (w.n === 1 ? '' : 's') + '</div>';
-          var tx = Math.min(Math.max(cx, 80), W - 80);
-          tip.style.left = tx + 'px'; tip.style.top = (y(w.earned + w.booked) - 8) + 'px';
+          var below = cy < 110;
+          tip.style.left = Math.min(Math.max(cx, 90), W - 90) + 'px'; tip.style.top = (below ? cy + 14 : cy - 12) + 'px';
+          tip.style.transform = below ? 'translate(-50%, 0)' : '';
           tip.classList.add('show');
         }
+        function hide() { tip.classList.remove('show'); cross.classList.remove('show'); dot.setAttribute('opacity', 0); }
         hit.addEventListener('mouseenter', show); hit.addEventListener('focus', show);
-        hit.addEventListener('mouseleave', function () { tip.classList.remove('show'); });
-        hit.addEventListener('blur', function () { tip.classList.remove('show'); });
+        hit.addEventListener('mouseleave', hide); hit.addEventListener('blur', hide);
         svg.appendChild(hit);
       });
       box.appendChild(svg);
 
       document.getElementById('rev-table').innerHTML = weeks.map(function (w) {
-        return '<tr><td>' + w.start.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) + '</td><td>' + money(w.earned) + '</td><td>' + money(w.booked) + '</td><td>' + w.n + '</td></tr>';
+        return '<tr><td>' + w.start.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) + '</td><td>' + money(w.earned) + '</td><td>' + money(w.booked) + '</td><td>' + w.n + '</td><td>' + money(w.cum) + '</td></tr>';
       }).join('');
     }
     var rt; window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(function () { renderChart(all()); }, 150); });

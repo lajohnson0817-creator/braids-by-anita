@@ -189,8 +189,8 @@
     .tab[aria-selected="true"] span { font-style: italic; color: var(--caramel); }
     .card { position: sticky; top: calc(var(--header-h) + 24px); border-radius: 26px; padding: clamp(26px, 4vw, 44px); background: var(--linen); color: var(--ink); box-shadow: 0 40px 80px -40px rgba(0,0,0,.6); }
     .card[hidden] { display: none; }
-    .card .arch { height: 220px; border-radius: 999px 999px 18px 18px; margin-bottom: 26px; display: block; overflow: hidden; background: linear-gradient(160deg, var(--chocolate), var(--espresso)); }
-    .card .arch img { width: 100%; height: 100%; object-fit: cover; object-position: center 15%; }
+    .card .arch { width: 100%; max-width: 360px; aspect-ratio: 600 / 731; margin: 0 auto 26px; border-radius: 999px 999px 18px 18px; display: block; overflow: hidden; background: linear-gradient(160deg, var(--chocolate), var(--espresso)); }
+    .card .arch img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
     .card h3 { font-family: var(--serif); font-weight: 400; font-size: 38px; line-height: 1.05; }
     .card .desc { color: var(--muted); margin: 10px 0 22px; font-size: 15px; }
     .sizes { list-style: none; margin: 0 0 18px; padding: 0; }
